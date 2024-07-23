@@ -19,9 +19,8 @@ def make_plot(x, y, lines=None):
         plt.plot(line[0], line[1])
     plt.show()
 
-def rsi(hist, period=14):
-    # extract closing prices and gain per day
-    close_prices = hist["Close"].tolist()
+def rsi(close_prices, period=14):
+    # determine gain and loss per day
     gains = [max(0, close_prices[i]/close_prices[i-1] - 1) for i in range(1, len(close_prices))]
     losses = [max(0, 1 - close_prices[i]/close_prices[i-1]) for i in range(1, len(close_prices))]
 
@@ -43,9 +42,10 @@ def rsi(hist, period=14):
     return rsi_values
 
 
-def 
+def ma(close_prices, period):
+    return [sum(close_prices[i:i-period])/period for i in range(period, len(close_prices))]
 
-    
+
         
 
 # get all stock info
