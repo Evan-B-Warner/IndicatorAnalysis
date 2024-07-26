@@ -1,0 +1,4 @@
+keras
+bayesian-optimization
+scikit-learn
+yfinance

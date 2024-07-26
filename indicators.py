@@ -170,6 +170,14 @@ def average_directional_index(close_prices, high_prices, low_prices, period=14):
 def compute_all_indicators(ticker):
     # pull stock price info from yfinance
     stock = yf.Ticker(ticker)
+    
+    total_revenue, revenue_per_share = -1, -1
+    try:
+        info = stock.info
+        total_revenue = info["totalRevenue"]
+        revenue_per_share = info["revenuePerShare"]
+    except:
+        pass
     hist = stock.history(period="1y")
 
     # extract necessary pricing data
@@ -179,7 +187,7 @@ def compute_all_indicators(ticker):
     low_prices = hist["Low"].tolist()
     
     # ensure that the ticker was properly pulled
-    if len(close_prices) < 155:
+    if len(close_prices) < 180:
         return []
 
     # compute indicators
@@ -244,7 +252,7 @@ def compute_all_indicators(ticker):
     adx_30 = [0][:]*(n - len(adx_30)) + adx_30
     
     # randomly select 5 days for the security that are at least 120 days in so all metrics are available
-    selected_inds = random.sample(range(120, n-30), 5)
+    selected_inds = random.sample(range(140, n-30), 10)
 
     # generate training data for each ind
     train_rows = []
@@ -257,31 +265,99 @@ def compute_all_indicators(ticker):
         # build train row
         train_row = [
             rsi_5[i],
+            rsi_5[i-1],
+            rsi_5[i-5],
+            rsi_5[i-20],
             rsi_14[i],
+            rsi_14[i-1],
+            rsi_14[i-5],
+            rsi_14[i-20],
             rsi_30[i],
+            rsi_30[i-1],
+            rsi_30[i-5],
+            rsi_30[i-20],
             ma_5[i],
+            ma_5[i-1],
+            ma_5[i-5],
+            ma_5[i-20],
             ma_20[i],
+            ma_20[i-1],
+            ma_20[i-5],
+            ma_20[i-20],
             ma_50[i],
+            ma_50[i-1],
+            ma_50[i-5],
+            ma_50[i-20],
             ma_100[i],
+            ma_100[i-1],
+            ma_100[i-5],
+            ma_100[i-20],
             ema_5[i],
+            ema_5[i-1],
+            ema_5[i-5],
+            ema_5[i-20],
             ema_20[i],
+            ema_20[i-1],
+            ema_20[i-5],
+            ema_20[i-20],
             ema_50[i],
+            ema_50[i-1],
+            ema_50[i-5],
+            ema_50[i-20],
             ema_100[i],
+            ema_100[i-1],
+            ema_100[i-5],
+            ema_100[i-20],
             macd_values[i],
+            macd_values[i-1],
+            macd_values[i-5],
+            macd_values[i-20],
             macd_signal[i],
+            macd_signal[i-1],
+            macd_signal[i-5],
+            macd_signal[i-20],
             so_5[i],
+            so_5[i-1],
+            so_5[i-5],
+            so_5[i-20],
             so_14[i],
+            so_14[i-1],
+            so_14[i-5],
+            so_14[i-20],
             so_30[i],
+            so_30[i-1],
+            so_30[i-5],
+            so_30[i-20],
             atr_5[i],
+            atr_5[i-1],
+            atr_5[i-5],
+            atr_5[i-20],
             atr_14[i],
+            atr_14[i-1],
+            atr_14[i-5],
+            atr_14[i-20],
             atr_30[i],
+            atr_30[i-1],
+            atr_30[i-5],
+            atr_30[i-20],
             adx_5[i],
+            adx_5[i-1],
+            adx_5[i-5],
+            adx_5[i-20],
             adx_14[i],
+            adx_14[i-1],
+            adx_14[i-5],
+            adx_14[i-20],
             adx_30[i],
+            adx_30[i-1],
+            adx_30[i-5],
+            adx_30[i-20],
             day_change,
             week_change,
             month_change,
-            dates[i]
+            dates[i],
+            total_revenue,
+            revenue_per_share
         ]
         train_rows.append(train_row)
     
