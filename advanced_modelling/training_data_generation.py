@@ -6,10 +6,12 @@ from sklearn.model_selection import train_test_split
 from indicators import compute_all_indicators
 
 
-def write_to_csv(rows, save_path):
+def write_to_csv(rows, save_path, header=None):
     """Writes each row in `rows` to the specified save path"""
     with open(save_path, "w", newline="") as f:
         csv_writer = csv.writer(f)
+        if header is not None:
+            csv_writer.writerow(header)
         for row in rows:
             csv_writer.writerow(row)
 
@@ -41,8 +43,8 @@ def normalize_train_data(X):
     X = np.array(X).astype("float64")
     for col in range(len(X[0])):
         vals = X[:, col]
-        mean, std = np.mean(vals), np.std(vals)
-        X[:, col] = (vals - mean) / std
+        max, min = np.max(vals), np.min(vals)
+        X[:, col] = (vals - max) / (max - min)
     return X
 
 
@@ -63,15 +65,115 @@ def process_initial_train_data(save_path="data/train_data.csv"):
             X.append(X_row)
     X = np.array(X)
 
+    # subtract each backstep from current indicator
+    for i in range(0, 85, 4):
+        for ii in range(i+1, i+4):
+            X[:, ii] = X[:, i].astype("float64") - X[:, ii].astype("float64")
+    # should probably use division for MA, EMA, MACD/MACD_signal
+    # ADX calculation is wrong
+
     # normalize model inputs in X
-    X[:, :-3] = normalize_train_data(X[:, :-3])
+    #X[:, :-3] = normalize_train_data(X[:, :-3])
     y = np.array(y).astype("float64")
     y = y*100
 
     # save to csv
     save_folder = "/".join(save_path.split("/")[:-1])
-    write_to_csv(X, f"{save_folder}/X.csv")
-    write_to_csv(y, f"{save_folder}/y.csv")
+    X_header = [
+        "rsi_5",
+        "rsi_5-1",
+        "rsi_5-5",
+        "rsi_5-20",
+        "rsi_14",
+        "rsi_14-1",
+        "rsi_14-5",
+        "rsi_14-20",
+        "rsi_30",
+        "rsi_30-1",
+        "rsi_30-5",
+        "rsi_30-20",
+        "ma_5",
+        "ma_5-1",
+        "ma_5-5",
+        "ma_5-20",
+        "ma_20",
+        "ma_20-1",
+        "ma_20-5",
+        "ma_20-20",
+        "ma_50",
+        "ma_50-1",
+        "ma_50-5",
+        "ma_50-20",
+        "ma_100",
+        "ma_100-1",
+        "ma_100-5",
+        "ma_100-20",
+        "ema_5",
+        "ema_5-1",
+        "ema_5-5",
+        "ema_5-20",
+        "ema_20",
+        "ema_20-1",
+        "ema_20-5",
+        "ema_20-20",
+        "ema_50",
+        "ema_50-1",
+        "ema_50-5",
+        "ema_50-20",
+        "ema_100",
+        "ema_100-1",
+        "ema_100-5",
+        "ema_100-20",
+        "macd",
+        "macd-1",
+        "macd-5",
+        "macd-20",
+        "macd_signal",
+        "macd_signal-1",
+        "macd_signal-5",
+        "macd_signal-20",
+        "so_5",
+        "so_5-1",
+        "so_5-5",
+        "so_5-20",
+        "so_14",
+        "so_14-1",
+        "so_14-5",
+        "so_14-20",
+        "so_30",
+        "so_30-1",
+        "so_30-5",
+        "so_30-20",
+        "atr_5",
+        "atr_5-1",
+        "atr_5-5",
+        "atr_5-20",
+        "atr_14",
+        "atr_14-1",
+        "atr_14-5",
+        "atr_14-20",
+        "atr_30",
+        "atr_30-1",
+        "atr_30-5",
+        "atr_30-20",
+        "adx_5",
+        "adx_5-1",
+        "adx_5-5",
+        "adx_5-20",
+        "adx_14",
+        "adx_14-1",
+        "adx_14-5",
+        "adx_14-20",
+        "adx_30",
+        "adx_30-1",
+        "adx_30-5",
+        "adx_30-20",
+        "date",
+        "total_revenue",
+        "revenue_per_share"
+    ]
+    write_to_csv(X, f"{save_folder}/X.csv", header=X_header)
+    write_to_csv(y, f"{save_folder}/y.csv", header=["1d", "5d", "20d"])
 
 
 def model_ready_data(x_path, y_path, split=0.2):
@@ -79,11 +181,13 @@ def model_ready_data(x_path, y_path, split=0.2):
     X, y = [], []
     with open(x_path) as f:
         csv_reader = csv.reader(f)
+        header = next(csv_reader)
         for row in csv_reader:
             X.append(row)
 
     with open(y_path) as f:
         csv_reader = csv.reader(f)
+        header = next(csv_reader)
         for row in csv_reader:
             y.append(row)
     

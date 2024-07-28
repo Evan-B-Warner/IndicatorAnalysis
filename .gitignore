@@ -1,1 +1,3 @@
-data/**
+advanced_modelling/data/**
+**/__pycache__
+**/.ipynb_checkpoints
