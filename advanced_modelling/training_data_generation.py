@@ -2,6 +2,7 @@ import csv
 import numpy as np
 import random
 from sklearn.model_selection import train_test_split
+from tqdm import tqdm
 
 from indicators import compute_all_indicators
 
@@ -35,7 +36,106 @@ def generate_initial_train_data(tickers, save_path="data/train_data.csv"):
         train_data.extend(compute_all_indicators(ticker))
     
     # write data to csv
-    write_to_csv(train_data, save_path)
+    header = [
+        "rsi_5",
+        "rsi_5-1",
+        "rsi_5-5",
+        "rsi_5-20",
+        "rsi_14",
+        "rsi_14-1",
+        "rsi_14-5",
+        "rsi_14-20",
+        "rsi_30",
+        "rsi_30-1",
+        "rsi_30-5",
+        "rsi_30-20",
+        "ma_5",
+        "ma_5-1",
+        "ma_5-5",
+        "ma_5-20",
+        "ma_20",
+        "ma_20-1",
+        "ma_20-5",
+        "ma_20-20",
+        "ma_50",
+        "ma_50-1",
+        "ma_50-5",
+        "ma_50-20",
+        "ma_100",
+        "ma_100-1",
+        "ma_100-5",
+        "ma_100-20",
+        "ema_5",
+        "ema_5-1",
+        "ema_5-5",
+        "ema_5-20",
+        "ema_20",
+        "ema_20-1",
+        "ema_20-5",
+        "ema_20-20",
+        "ema_50",
+        "ema_50-1",
+        "ema_50-5",
+        "ema_50-20",
+        "ema_100",
+        "ema_100-1",
+        "ema_100-5",
+        "ema_100-20",
+        "macd",
+        "macd-1",
+        "macd-5",
+        "macd-20",
+        "macd_signal",
+        "macd_signal-1",
+        "macd_signal-5",
+        "macd_signal-20",
+        "so_5",
+        "so_5-1",
+        "so_5-5",
+        "so_5-20",
+        "so_14",
+        "so_14-1",
+        "so_14-5",
+        "so_14-20",
+        "so_30",
+        "so_30-1",
+        "so_30-5",
+        "so_30-20",
+        "atr_5",
+        "atr_5-1",
+        "atr_5-5",
+        "atr_5-20",
+        "atr_14",
+        "atr_14-1",
+        "atr_14-5",
+        "atr_14-20",
+        "atr_30",
+        "atr_30-1",
+        "atr_30-5",
+        "atr_30-20",
+        "adx_5",
+        "adx_5-1",
+        "adx_5-5",
+        "adx_5-20",
+        "adx_14",
+        "adx_14-1",
+        "adx_14-5",
+        "adx_14-20",
+        "adx_30",
+        "adx_30-1",
+        "adx_30-5",
+        "adx_30-20",
+        "close_price",
+        "high_price",
+        "low_price",
+        "date",
+        "total_revenue",
+        "revenue_per_share",
+        "1d",
+        "5d",
+        "20d"
+    ]
+    write_to_csv(train_data, save_path, header=header)
 
 
 def normalize_train_data(X):
@@ -208,11 +308,11 @@ def model_ready_data(x_path, y_path, split=0.2):
 
 if __name__ == "__main__":
     # generate raw training data
-    #tickers = read_tickers(["data/NYSE.txt", "data/TSX.txt", "data/NASDAQ.txt"])
-    #generate_train_data(tickers)
+    tickers = read_tickers(["data/NYSE.txt", "data/TSX.txt", "data/NASDAQ.txt"])
+    generate_initial_train_data(tickers)
 
     # normalize and process data
-    process_initial_train_data("data/train_data.csv")
+    #process_initial_train_data("data/train_data.csv")
 
     # generate model ready data
-    X_train, X_val, y_train, y_val, auxiliary_train, auxiliary_val = model_ready_data("data/X.csv", "data/y.csv")
+    #X_train, X_val, y_train, y_val, auxiliary_train, auxiliary_val = model_ready_data("data/X.csv", "data/y.csv")

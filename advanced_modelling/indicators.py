@@ -352,12 +352,15 @@ def compute_all_indicators(ticker):
             adx_30[i-1],
             adx_30[i-5],
             adx_30[i-20],
-            day_change,
-            week_change,
-            month_change,
+            close_prices[i],
+            high_prices[i],
+            low_prices[i],
             dates[i],
             total_revenue,
-            revenue_per_share
+            revenue_per_share,
+            day_change,
+            week_change,
+            month_change
         ]
         train_rows.append(train_row)
     
